@@ -1,21 +1,19 @@
 package ru.geekbrains.gb_kotlin.viewmodel
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ru.geekbrains.gb_kotlin.model.NotesRepository
+import ru.geekbrains.gb_kotlin.model.entity.Note
 
 class MainViewModel : ViewModel() {
-
-    private val viewStateLiveData = MutableLiveData<MainViewState>()
-//    val notes = MutableLiveData<List<Note>>()
+    val notes = MutableLiveData<MutableList<Note>>()
 
     init {
-        viewStateLiveData.value = MainViewState(NotesRepository.list)
+        notes.value = NotesRepository.list
     }
 
-    val viewState
-        get() = viewStateLiveData as LiveData<MainViewState>
+//    val viewState
+//        get() = viewStateLiveData as LiveData<MainViewState>
 
 //    fun viewState(): LiveData<MainViewState> = viewStateLiveData
 

@@ -2,8 +2,9 @@ package ru.geekbrains.gb_kotlin.model
 
 import ru.geekbrains.gb_kotlin.model.entity.Note
 
+//синглтон
 object NotesRepository {
-    val list = mutableListOf<Note>(
+    val list = mutableListOf(
         Note(
             "Заметка #1",
             "Текст заметки #1",

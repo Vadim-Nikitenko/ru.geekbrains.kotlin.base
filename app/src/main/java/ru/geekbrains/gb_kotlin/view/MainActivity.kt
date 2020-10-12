@@ -15,8 +15,8 @@ import ru.geekbrains.gb_kotlin.model.entity.Note
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var viewModel: MainViewModel
-    var adapter: NotesRVAdapter = NotesRVAdapter()
+    private lateinit var viewModel: MainViewModel
+    private var adapter: NotesRVAdapter = NotesRVAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,8 +27,12 @@ class MainActivity : AppCompatActivity() {
         rv_notes.layoutManager = GridLayoutManager(this, 2)
         rv_notes.adapter = adapter
 
-        viewModel.viewState.observe(this, Observer { value ->
-            value?.let {adapter.notes = it.notes }
+//        viewModel.viewState.observe(this, Observer { value ->
+//            value?.let {adapter.notes = it.notes }
+//        })
+
+        viewModel.notes.observe(this, Observer { value ->
+            value?.let { adapter.notes = it }
         })
 
     }
