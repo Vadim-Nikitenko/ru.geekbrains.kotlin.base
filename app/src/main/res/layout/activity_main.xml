@@ -35,6 +35,6 @@
         app:layout_anchorGravity="bottom|end"
         android:src="@drawable/ic_add_white_24"
         app:layout_anchor="@id/rv_notes"
-        app:layout_behavior="ru.geekbrains.kotlin.base.view.common.FabBehavior"/>
+        app:layout_behavior="ru.geekbrains.kotlin.base.ui.common.FabBehavior"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
