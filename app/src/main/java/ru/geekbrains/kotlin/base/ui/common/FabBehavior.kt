@@ -1,4 +1,4 @@
-package ru.geekbrains.kotlin.base.view.common
+package ru.geekbrains.kotlin.base.ui.common
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -50,4 +50,7 @@ class FabBehavior(context: Context, attributeSet: AttributeSet) : FloatingAction
             child.show()
         }
     }
+
+
+
 }
