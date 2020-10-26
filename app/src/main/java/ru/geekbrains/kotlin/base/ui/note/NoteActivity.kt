@@ -93,7 +93,7 @@ class NoteActivity : BaseActivity<Note?, NoteViewState>() {
 
     private fun saveNote() {
         if (et_title.text == null || et_title.text!!.length < 3) return
-
+        val list = mutableListOf<Int>()
         note = note?.copy(
             title = et_title.text.toString(),
             text = et_body.text.toString(),
