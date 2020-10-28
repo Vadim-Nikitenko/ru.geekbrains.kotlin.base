@@ -3,4 +3,9 @@
     <string name="new_note_title">Новая заметка</string>
     <string name="note_hint_text">Текст заметки</string>
     <string name="note_title_hint">Заголовок</string>
+    <string name="logout">Выйти</string>
+    <string name="logout_title">Выход</string>
+    <string name="logout_message">Вы хотите выйти?</string>
+    <string name="logout_apply">Выйти</string>
+    <string name="logout_dismiss">Отменить</string>
 </resources>

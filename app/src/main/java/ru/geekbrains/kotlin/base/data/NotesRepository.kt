@@ -10,4 +10,5 @@ object NotesRepository {
     fun getNotes() = dataProvider.getNotes()
     fun saveNote(note: Note) = dataProvider.saveNote(note)
     fun getNoteById(id: String) = dataProvider.getNoteById(id)
+    fun getCurrentUser() = dataProvider.getCurrentUser()
 }
