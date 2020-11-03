@@ -7,10 +7,10 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.firebase.ui.auth.AuthUI
 import kotlinx.android.synthetic.main.activity_main.*
+import org.koin.android.viewmodel.ext.android.viewModel
 import ru.geekbrains.kotlin.R
 import ru.geekbrains.kotlin.base.data.entity.Note
 import ru.geekbrains.kotlin.base.ui.base.BaseActivity
@@ -25,9 +25,9 @@ class MainActivity : BaseActivity<List<Note>?, MainViewState>() {
         }
     }
 
-    override val viewModel: MainViewModel by lazy {
-        ViewModelProvider(this).get(MainViewModel::class.java)
-    }
+    override val viewModel: MainViewModel by viewModel()
+
+
     override val layoutRes = R.layout.activity_main
     private lateinit var adapter: NotesRVAdapter
 

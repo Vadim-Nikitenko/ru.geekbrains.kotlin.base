@@ -8,4 +8,10 @@
     <string name="logout_message">Вы хотите выйти?</string>
     <string name="logout_apply">Выйти</string>
     <string name="logout_dismiss">Отменить</string>
+    <string name="note_change_color">Изменить цвет</string>
+    <string name="note_delete">Удалить</string>
+    <string name="note_delete_title">Удаление заметки</string>
+    <string name="note_delete_message">Вы уверены, что хотите удалить заметку?</string>
+    <string name="note_delete_ok">Удалить</string>
+    <string name="note_delete_cancel">Отменить</string>
 </resources>

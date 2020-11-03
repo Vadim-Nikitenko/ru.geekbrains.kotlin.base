@@ -7,7 +7,7 @@ import ru.geekbrains.kotlin.base.data.entity.User
 import ru.geekbrains.kotlin.base.data.errors.NoAuthException
 import ru.geekbrains.kotlin.base.ui.base.BaseViewModel
 
-class SplashViewModel : BaseViewModel<Boolean?, SplashViewState>() {
+class SplashViewModel(val notesRepository: NotesRepository) : BaseViewModel<Boolean?, SplashViewState>() {
 
 
     private var userLiveData: LiveData<User?>? = null
@@ -21,7 +21,7 @@ class SplashViewModel : BaseViewModel<Boolean?, SplashViewState>() {
     }
 
     fun requestUser() {
-        userLiveData = NotesRepository.getCurrentUser()
+        userLiveData = notesRepository.getCurrentUser()
         userLiveData?.observeForever(userObserver)
     }
 
