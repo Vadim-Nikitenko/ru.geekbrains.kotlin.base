@@ -1,5 +1,6 @@
 package ru.geekbrains.kotlin.base.ui.splash
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import ru.geekbrains.kotlin.base.data.NotesRepository
@@ -25,7 +26,8 @@ class SplashViewModel(val notesRepository: NotesRepository) : BaseViewModel<Bool
         userLiveData?.observeForever(userObserver)
     }
 
-    override fun onCleared() {
+    @VisibleForTesting
+    public override fun onCleared() {
         super.onCleared()
         userLiveData?.removeObserver(userObserver)
     }
