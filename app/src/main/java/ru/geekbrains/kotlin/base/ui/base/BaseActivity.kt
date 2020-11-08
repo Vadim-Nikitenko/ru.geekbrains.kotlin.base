@@ -5,17 +5,29 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import com.firebase.ui.auth.AuthUI
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.launch
 import ru.geekbrains.kotlin.R
 import ru.geekbrains.kotlin.base.data.errors.NoAuthException
+import java.util.*
+import kotlin.coroutines.CoroutineContext
 
-abstract class BaseActivity<T, S : BaseViewState<T>> : AppCompatActivity() {
+
+abstract class BaseActivity<S> : AppCompatActivity(), CoroutineScope {
     companion object {
-        const val RC_SIGN_IN = 65123
+        private const val RC_SIGN_IN = 4242
     }
 
-    abstract val viewModel: BaseViewModel<T, S>
+    override val coroutineContext: CoroutineContext by lazy { Dispatchers.Main + Job() }
+    private lateinit var dataJob: Job
+    private lateinit var errorJob: Job
+
+    abstract val viewModel: BaseViewModel<S>
     abstract val layoutRes: Int?
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,14 +35,33 @@ abstract class BaseActivity<T, S : BaseViewState<T>> : AppCompatActivity() {
         layoutRes?.let {
             setContentView(it)
         }
-        viewModel.getViewState().observe(this, Observer { value ->
-            value ?: return@Observer
-            value.error?.let {
-                renderError(it)
-                return@let
+    }
+
+    override fun onStart() {
+        super.onStart()
+        dataJob = launch {
+            viewModel.getViewState().consumeEach {
+                renderData(it)
             }
-            renderData(value.data)
-        })
+        }
+
+        errorJob = launch {
+            viewModel.getErrorChannel().consumeEach {
+                renderError(it)
+            }
+        }
+
+    }
+
+    override fun onStop() {
+        super.onStop()
+        dataJob.cancel()
+        errorJob.cancel()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        coroutineContext.cancel()
     }
 
     protected fun renderError(error: Throwable) {
@@ -40,13 +71,19 @@ abstract class BaseActivity<T, S : BaseViewState<T>> : AppCompatActivity() {
                 showError(it)
             }
         }
-
     }
 
-    private fun startLogin() {
+    protected fun showError(text: String) {
+        Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
+    }
+
+    abstract fun renderData(data: S)
+
+    fun startLogin() {
         val providers = listOf(
             AuthUI.IdpConfig.GoogleBuilder().build()
         )
+
         val intent = AuthUI.getInstance().createSignInIntentBuilder()
             .setLogo(R.drawable.notes)
             .setTheme(R.style.LoginTheme)
@@ -57,15 +94,10 @@ abstract class BaseActivity<T, S : BaseViewState<T>> : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == RC_SIGN_IN && resultCode != Activity.RESULT_OK) {
+        if (requestCode == RC_SIGN_IN && resultCode != Activity.RESULT_OK) {
             finish()
         }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
-    protected fun showError(text: String) {
-        Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
-    }
-
-    abstract fun renderData(data: T)
 }

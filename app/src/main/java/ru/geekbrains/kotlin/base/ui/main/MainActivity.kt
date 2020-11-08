@@ -1,6 +1,5 @@
 package ru.geekbrains.kotlin.base.ui.main
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -18,7 +17,7 @@ import ru.geekbrains.kotlin.base.ui.base.BaseActivity
 import ru.geekbrains.kotlin.base.ui.note.NoteActivity
 import ru.geekbrains.kotlin.base.ui.splash.SplashActivity
 
-class MainActivity : BaseActivity<List<Note>?, MainViewState>() {
+class MainActivity : BaseActivity<List<Note>?>() {
 
     companion object {
         fun start(context: Context) = Intent(context, MainActivity::class.java).apply {
@@ -27,15 +26,13 @@ class MainActivity : BaseActivity<List<Note>?, MainViewState>() {
     }
 
     override val viewModel: MainViewModel by viewModel()
-
-
     override val layoutRes = R.layout.activity_main
-    private lateinit var adapter: NotesRVAdapter
+    lateinit var adapter: NotesRVAdapter
 
-    @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setSupportActionBar(toolbar)
+
         rv_notes.layoutManager = GridLayoutManager(this, 2)
         adapter = NotesRVAdapter {
             NoteActivity.start(this, it.id)
@@ -64,15 +61,20 @@ class MainActivity : BaseActivity<List<Note>?, MainViewState>() {
         AlertDialog.Builder(this)
             .setTitle(R.string.logout_title)
             .setMessage(R.string.logout_message)
-            .setPositiveButton(R.string.logout_apply) { dialog, which -> logout() }
+            .setPositiveButton(R.string.logout_apply) { dialog, which ->
+                logout()
+            }
             .setNegativeButton(R.string.logout_dismiss) { dialog, which -> dialog.dismiss() }
             .show()
     }
 
-    private fun logout() {
-        AuthUI.getInstance().signOut(this).addOnCompleteListener {
-            SplashActivity.start(this)
-            finish()
-        }
+    fun logout() {
+        AuthUI.getInstance()
+            .signOut(this)
+            .addOnCompleteListener {
+                SplashActivity.start(this)
+                finish()
+            }
     }
+
 }
