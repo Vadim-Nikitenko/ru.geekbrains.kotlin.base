@@ -9,7 +9,6 @@ import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
 import androidx.core.content.res.ResourcesCompat
-import androidx.lifecycle.ViewModelProvider
 import kotlinx.android.synthetic.main.activity_note.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import ru.geekbrains.kotlin.R
@@ -19,17 +18,18 @@ import ru.geekbrains.kotlin.base.ui.base.BaseActivity
 import java.text.SimpleDateFormat
 import java.util.*
 
-class NoteActivity : BaseActivity<NoteViewState.Data, NoteViewState>() {
+class NoteActivity : BaseActivity<NoteData>() {
 
     companion object {
         private val EXTRA_NOTE = "note"
 
         private const val DATE_TIME_FORMAT = "dd.MM.yy HH:mm"
 
-        fun start(context: Context, noteId: String? = null) = Intent(context, NoteActivity::class.java).apply {
-            putExtra(EXTRA_NOTE, noteId)
-            context.startActivity(this)
-        }
+        fun start(context: Context, noteId: String? = null) =
+            Intent(context, NoteActivity::class.java).apply {
+                putExtra(EXTRA_NOTE, noteId)
+                context.startActivity(this)
+            }
     }
 
 
@@ -37,7 +37,6 @@ class NoteActivity : BaseActivity<NoteViewState.Data, NoteViewState>() {
     override val layoutRes = R.layout.activity_note
     private var note: Note? = null
     var color = Note.Color.WHITE
-
 
     val textChangeListener = object : TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -61,7 +60,7 @@ class NoteActivity : BaseActivity<NoteViewState.Data, NoteViewState>() {
         initView()
     }
 
-    override fun renderData(data: NoteViewState.Data) {
+    override fun renderData(data: NoteData) {
         if (data.isDeleted) finish()
 
         this.note = data.note
@@ -88,8 +87,8 @@ class NoteActivity : BaseActivity<NoteViewState.Data, NoteViewState>() {
                 Note.Color.RED -> R.color.red
                 Note.Color.VIOLET -> R.color.violet
             }
-
             toolbar.setBackgroundColor(ResourcesCompat.getColor(resources, color, null))
+            this.color = it.color
         }
 
         colorPicker.onColorClickListener = {
@@ -104,16 +103,24 @@ class NoteActivity : BaseActivity<NoteViewState.Data, NoteViewState>() {
 
     private fun saveNote() {
         if (et_title.text == null || et_title.text!!.length < 3) return
-        val list = mutableListOf<Int>()
+
         note = note?.copy(
             title = et_title.text.toString(),
             text = et_body.text.toString(),
             lastChanged = Date(),
             color = color
-        ) ?: Note(UUID.randomUUID().toString(), et_title.text.toString(), et_body.text.toString())
+        ) ?: Note(
+            UUID.randomUUID().toString(),
+            et_title.text.toString(),
+            et_body.text.toString(),
+            color = note?.color ?: this.color
+        )
 
         note?.let { viewModel.save(it) }
     }
+
+    override fun onCreateOptionsMenu(menu: Menu) =
+        menuInflater.inflate(R.menu.note, menu).let { true }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         android.R.id.home -> {
@@ -125,7 +132,7 @@ class NoteActivity : BaseActivity<NoteViewState.Data, NoteViewState>() {
         else -> super.onOptionsItemSelected(item)
     }
 
-    fun deleteNote(){
+    fun deleteNote() {
         AlertDialog.Builder(this)
             .setTitle(R.string.note_delete_title)
             .setMessage(R.string.note_delete_message)
@@ -136,13 +143,12 @@ class NoteActivity : BaseActivity<NoteViewState.Data, NoteViewState>() {
             .show()
     }
 
-    fun togglePicker(){
-        if(colorPicker.isOpen){
+    fun togglePicker() {
+        if (colorPicker.isOpen) {
             colorPicker.close()
         } else {
             colorPicker.open()
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu) = menuInflater.inflate(R.menu.note, menu).let { true }
 }
