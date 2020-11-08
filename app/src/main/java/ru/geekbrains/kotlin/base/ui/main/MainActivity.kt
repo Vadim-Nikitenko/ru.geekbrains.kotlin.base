@@ -1,5 +1,6 @@
 package ru.geekbrains.kotlin.base.ui.main
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -31,6 +32,7 @@ class MainActivity : BaseActivity<List<Note>?, MainViewState>() {
     override val layoutRes = R.layout.activity_main
     private lateinit var adapter: NotesRVAdapter
 
+    @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setSupportActionBar(toolbar)

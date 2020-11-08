@@ -130,7 +130,7 @@ class NoteActivity : BaseActivity<NoteViewState.Data, NoteViewState>() {
             .setTitle(R.string.note_delete_title)
             .setMessage(R.string.note_delete_message)
             .setPositiveButton(R.string.note_delete_ok) { dialog, which ->
-                note?.let { viewModel.deleteNote(it) }
+                viewModel.deleteNote()
             }
             .setNegativeButton(R.string.note_delete_cancel) { dialog, which -> dialog.dismiss() }
             .show()
